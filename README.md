@@ -2,6 +2,7 @@
 Node command line program that implements a simple fake amazon for a homework assignment.
 
 #CREATE DATABASE bamazon
+
 CREATE TABLE products (
 	item_id INT PRIMARY KEY AUTO_INCREMENT UNIQUE NOT NULL,
 	product_name VARCHAR(100) NOT NULL,
