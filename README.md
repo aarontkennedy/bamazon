@@ -1,7 +1,7 @@
 # bamazon
 Node command line program that implements a simple fake amazon for a homework assignment.
 
-'''
+```
 CREATE DATABASE bamazon
 
 CREATE TABLE products (
@@ -18,4 +18,4 @@ CREATE TABLE departments (
 	department_name VARCHAR(100) NOT NULL,
 	over_head_costs INT DEFAULT 0
 );
-'''
+```
