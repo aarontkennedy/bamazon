@@ -1,0 +1,11 @@
+item_id,product_name,department_name,description,stock_quantity,price,total_product_sales
+1,Bacon,Grocery,Thick Cut Bacon,100,3.50,0
+2,Blanket Flower,Garden,Gaillardia,20,8.99,0
+3,Pruner,Home Improvement,"12"" long",45,19.99,0
+4,Leash,Pets,Retractable leash,5,4.50,0
+5,Levi's 501,Clothing,32 - 32,15,31.99,0
+6,Catsup,Grocery,"Nonorganic, highly processed, tomato flavored paste",25,2.30,0
+7,Sage,Garden,Herb,5,3.85,0
+8,Hammer,Home Improvement,"12"" hammer",25,8.75,0
+9,Dog Socks,Pets,6 pack of dog booties,4,9.99,0
+10,Boxer Shorts,Clothing,3 pack,25,12.99,0
