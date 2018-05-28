@@ -19,14 +19,19 @@ function appCleanUp() {
 //
 // Ask what they would like to buy.
 //
-function whatDoYouWantToBuy(clearBeforePrint = true) {
+function whatDoYouWantToBuy(department = "", clearBeforePrint = true) {
   if (clearBeforePrint) {
     console.clear();
   }
 
+  if (department) {
+    department = ` AND department_name = "${department}"`;
+  }
+
   // get available products to buy
-  connection.query("SELECT * FROM products WHERE stock_quantity > 0",
+  connection.query(`SELECT * FROM products WHERE stock_quantity > 0 ${department};`,
     function (err, res) {
+
       if (err) { throw err; }
 
       let choicesArray = [];
@@ -73,6 +78,7 @@ function whatDoYouWantToBuy(clearBeforePrint = true) {
           appCleanUp();
         }
         else if (!answer.confirmation) {
+          console.log(`Sorry, please check out our other products.\n`);
           whatDoYouWantToBuy();
         }
         else {
@@ -82,16 +88,16 @@ function whatDoYouWantToBuy(clearBeforePrint = true) {
     });
 
 }
-whatDoYouWantToBuy();
+whatDoYouWantToBuy("grocery");
 
 
 function purchaseProduct(product, quantity) {
-  let totalPurchasePrice = quantity*product.price;
-  let query = connection.query(
+  let totalPurchasePrice = quantity * product.price;
+  connection.query(
     `UPDATE products 
     SET stock_quantity = stock_quantity-?, 
     total_product_sales = total_product_sales+?  
-    WHERE item_id = ? AND stock_quantity >= ?`,
+    WHERE item_id = ? AND stock_quantity >= ?;`,
     [quantity, totalPurchasePrice, product.item_id, quantity],
     function (err, res) {
       if (err) {
@@ -107,9 +113,8 @@ function purchaseProduct(product, quantity) {
       else {
         console.log(`Thank you, your total purchase is $${totalPurchasePrice}.\n`);
       }
-      whatDoYouWantToBuy(false);
-    }
-  );
+      whatDoYouWantToBuy("", false);
+    });
 }
 
 
