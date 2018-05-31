@@ -63,9 +63,10 @@ function viewProductSalesByDepartment() {
     products.total_product_sales,
     products.total_product_sales - departments.over_head_costs AS total_profit
     FROM departments
-    INNER JOIN products
-    WHERE departments.department_name = products.department_name
-    GROUP BY departments.department_name;`, function (err, res) {
+    LEFT JOIN products
+    ON departments.department_name = products.department_name
+    GROUP BY departments.department_name 
+    ORDER BY departments.department_id;`, function (err, res) {
 
             console.table(res);
 
