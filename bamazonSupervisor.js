@@ -86,7 +86,6 @@ function createNewDepartment() {
             validate: validateMoney
         }
     ]).then(answer => {
-        console.log("overhead = " + answer.overhead);
         connection.query("INSERT INTO departments SET ?",
             {
                 department_name: answer.name,
@@ -97,7 +96,7 @@ function createNewDepartment() {
                     throw err;
                 }
 
-                //console.clear();
+                console.clear();
                 console.log(`${answer.name} has been added.`);
                 whatDoYouWantToDo(false);
             }
