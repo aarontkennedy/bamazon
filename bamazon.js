@@ -106,6 +106,7 @@ function whatDoYouWantToBuy(department = "", clearBeforePrint = true) {
         else if (!answer.confirmation) {
           // they said they wanted to order, but they didn't
           // confirm so we present them the product list again
+          console.clear();
           console.log(`Sorry, please check out our other products.\n`);
           whatDoYouWantToBuy("", false);
         }
