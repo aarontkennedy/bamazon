@@ -1,21 +1,12 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 const cTable = require('console.table');
+const bamazon = require("./bamazon.js");
 
-
-//
-//  The connection needed for the database
-//
-const connection = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "root",
-    database: "bamazon"
-});
-function appCleanUp() {
-    connection.end();
-}
+const connection = bamazon.connection;
+const appCleanUp = bamazon.appCleanUp;
+const validateWholeNumber = bamazon.validateWholeNumber;
+const validateMoney = bamazon.validateMoney;
 
 
 //
@@ -57,11 +48,11 @@ function viewProductSalesByDepartment() {
     console.clear();
 
     connection.query(`
-    SELECT  departments.department_id, 
-    departments.department_name,
-    departments.over_head_costs,
-    products.total_product_sales,
-    products.total_product_sales - departments.over_head_costs AS total_profit
+    SELECT  departments.department_id AS id, 
+    departments.department_name AS department,
+    FORMAT(departments.over_head_costs, 2) AS over_head,
+    FORMAT(products.total_product_sales, 2) AS product_sales,
+    FORMAT(products.total_product_sales - departments.over_head_costs, 2) AS total_profit
     FROM departments
     LEFT JOIN products
     ON departments.department_name = products.department_name
@@ -92,14 +83,10 @@ function createNewDepartment() {
             type: "input",
             message: "Overhead Costs: ",
             name: "overhead",
-            validate: function (input) {
-                if (parseFloat(input) == NaN) {
-                    return "Enter number without $.";
-                }
-                return true;
-            },
+            validate: validateMoney
         }
     ]).then(answer => {
+        console.log("overhead = " + answer.overhead);
         connection.query("INSERT INTO departments SET ?",
             {
                 department_name: answer.name,
@@ -110,7 +97,7 @@ function createNewDepartment() {
                     throw err;
                 }
 
-                console.clear();
+                //console.clear();
                 console.log(`${answer.name} has been added.`);
                 whatDoYouWantToDo(false);
             }

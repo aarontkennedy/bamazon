@@ -1,20 +1,13 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
+const bamazon = require("./bamazon.js");
+const cTable = require('console.table');
 
-//
-//  The connection needed for the database
-//
-const connection = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "root",
-    database: "bamazon"
-});
-function appCleanUp() {
-    connection.end();
-}
-
+const connection = bamazon.connection;
+const appCleanUp = bamazon.appCleanUp;
+const validateWholeNumber = bamazon.validateWholeNumber;
+const validateMoney = bamazon.validateMoney;
+const validateNumber = bamazon.validateNumber;
 
 //
 // Ask what they would like to.
@@ -62,12 +55,16 @@ whatDoYouWantToDo();
 function viewProductsForSale(condition = "") {
     console.clear();
 
-    connection.query(`SELECT * FROM products ${condition};`,
+    connection.query(`SELECT 
+    item_id AS id,
+    product_name AS product,
+    description,
+    FORMAT(price, 2) AS price,
+    stock_quantity AS quantity
+    FROM products ${condition};`,
         function (err, res) {
 
-            for (let i = 0; i < res.length; i++) {
-                console.log(`${res[i].item_id}: ${res[i].product_name} (${res[i].description}) - $${res[i].price} - Qty: ${res[i].stock_quantity}`);
-            }
+            console.table(res);
 
             whatDoYouWantToDo(false);
         });
@@ -116,21 +113,13 @@ function addNewProduct() {
                 type: "input",
                 message: "Sale Price: ",
                 name: "price",
-                validate: function (input) {
-                    if (parseFloat(input) == NaN) {
-                        return "Enter a price without $.";
-                    }
-                    return true;
-                },
+                validate: validateMoney
             },
             {
                 type: "input",
                 message: "Initial Stock Quantity: ",
                 name: "quantity",
-                validate: function (input) {
-                    const reg = /^\d+$/;
-                    return (reg.test(input) ? true : "Enter a positive number.");
-                },
+                validate: validateWholeNumber
             }
         ]).then(answer => {
             connection.query("INSERT INTO products SET ?",
@@ -165,7 +154,7 @@ function adjustInventory() {
         let choicesArray = [];
         for (let i = 0; i < res.length; i++) {
             choicesArray.push({
-                name: `${res[i].product_name} (${res[i].description}) - $${res[i].price} - Qty: ${res[i].stock_quantity}`,
+                name: `${res[i].product_name} (${res[i].description}) - $${res[i].price.toFixed(2)} - Qty: ${res[i].stock_quantity}`,
                 value: res[i]
             });
         }
@@ -181,10 +170,7 @@ function adjustInventory() {
                 type: "input",
                 message: "Increase inventory by?",
                 name: "productNum",
-                validate: function (input) {
-                    const reg = /^[\-\+]?\d+$/;
-                    return (reg.test(input) ? true : "Enter a number.");
-                },
+                validate: validateNumber  // this way they can subtract with a negative to account for product theft...
             }
         ]).then(answer => {
             connection.query(
@@ -204,7 +190,6 @@ function adjustInventory() {
             );
         });
     });
-
 }
 
 
