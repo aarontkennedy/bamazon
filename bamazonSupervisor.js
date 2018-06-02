@@ -57,7 +57,7 @@ function viewProductSalesByDepartment() {
     LEFT JOIN products
     ON departments.department_name = products.department_name
     GROUP BY departments.department_name 
-    ORDER BY departments.department_id;`, function (err, res) {
+    ORDER BY total_profit;`, function (err, res) { 
 
             console.table(res);
 
